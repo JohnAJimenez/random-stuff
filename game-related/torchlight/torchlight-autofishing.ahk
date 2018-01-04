@@ -16,12 +16,15 @@
 ; General Helpers:
 ; F1 : Magnifies the pixel under the cursor, this make selecting the catch ring
 ;      much easier
+; F8 : Toggles suspending of the hotkeys
 ; F9 : Clear all previously set markers
 ; F10 : Show the debugging variables via tooltip (tends to get in the way of
 ;       script running properly)
 ; F11 : Toggle the marker indicators. Places boxes on the screen around the
 ;       different markers that have been set
 ; F12 : Fully reload the script
+; Arrow Keys: Moves the mouse by individual pixels to help pick the trigger
+;             ring
 ;
 ; Set Markers: Place mouse over element & press button. Script now uses that
 ;              mark for interactions
@@ -32,9 +35,11 @@
 ;      catch button. See notes below
 ; F5 : Marks the "Ok" button on the popup that details your catch
 ; Action:
-; F6 : Starts & Stops the auto fishing.
+; F6 : Starts the auto fishing.
+; F7 : Stops the auto fishing.
 ;
 ; Notes:
+; * The script starts with the hoykeys suspended, press F8 to enable them
 ; * Close fishing interface after setting markers before starting autofisher.
 ; * When selecting the trigger ring:
 ;   The script works by matching the color marked in step 4 against the colors
@@ -90,6 +95,11 @@ t2PauseBetweenFishingAttempts = 2000
 SetTimer, ReloadScriptIfChanged, 4000
 isFishing := False ; Flag
 showDebug := False
+currentAction := "Stopping Fishing"
+
+
+Suspend
+TimedToolTip("Auto Fishing started!`nPress F8 to enable/disable functionality!", 2000)
 
 F1::
 	toggleLiveBox := !toggleLiveBox
@@ -122,18 +132,22 @@ F5::
 return
 
 F6::
-	isFishing := !isFishing
-	if ( isFishing ) {
+	isFishing := true
+	if ( currentAction == "Stopping Fishing" ) {
 		currentAction := "Initing Fishing"
 		TimedToolTip("Starting to fish", 500)
 		startFishing()
-	} else {
-		currentAction := "Stopping Fishing"
-		TimedToolTip("Stopping fishing", 500)
 	}
 return
 
+F7::
+	isFishing := false
+	currentAction := "Stopping Fishing"
+	TimedToolTip("Stopping fishing", 500)
+return
+
 F9::
+	TimedToolTip("Auto Fishing variables reset", 1000)
 	clearAllFishingVariables()
 return
 
@@ -167,7 +181,34 @@ F11::
 return
 
 F12::
+	TimedToolTip("Reloading Auto Fishing", 1000)
 	reload
+return
+
+Left::
+	MouseGetPos, curX, curY
+	MouseMove, (curX-1), curY
+return
+Right::
+	MouseGetPos, curX, curY
+	MouseMove, (curX+1), curY
+return
+Up::
+	MouseGetPos, curX, curY
+	MouseMove, curX, (curY-1)
+return
+Down::
+	MouseGetPos, curX, curY
+	MouseMove, curX, (curY+1)
+return
+
+F8::
+	Suspend
+	if (A_IsSuspended) {
+		TimedToolTip("AutoFishing Keys disabled", 1500)
+	} else {
+		TimedToolTip("AutoFishing Keys enabled", 1500)
+	}
 return
 
 Return
@@ -228,6 +269,8 @@ clearAllFishingVariables() {
 	successY =
 	hookX =
 	hookY =
+	okButtonX =
+	okButtonY =
 }
 
 showBoxes() {
@@ -257,7 +300,6 @@ debugFishingVars() {
 	fishDebug := "Fishing Variables`n"
 	fishDebug .= "Currently Fishing: " . isFishing . "`n"
 	fishDebug .= "Current Action: " . currentAction . "`n"
-	fishDebug .= "Times Matched: " . timesMatched . "`n"
 	fishDebug .= "Fishing Hole: " . fishX . "x " . fishY . "y`n"
 	fishDebug .= "Catch Hook: " . hookX . "x " . hookY . "y`n"
 	fishDebug .= "Ok Button: " . okButtonX . "x " . okButtonY . "y`n"
@@ -304,6 +346,7 @@ clickOkButton() {
 
 	currentAction := "Clicking Ok Button"
 	if isFishing {
+		ToolTip, Click "OK" Button
 		MouseMove, %okButtonX%, %okButtonY%, 25
 		Send, {LButton down}
 		Sleep 150
@@ -333,7 +376,7 @@ startFishing() {
 		currentAction := "Starting to fish"
 		clickFishHole()
 		Sleep pauseForFishingInterface ; Allow the Fishing interface time to show up
-		moveMouseToHook(25)
+		moveMouseToHook(15)
 		checkForFish()
 		moveMouseToHook(10)
 		clickHook()
@@ -354,14 +397,12 @@ startFishing() {
 checkForFish() {
 	global
 	currentAction := "Waiting for fish"
-	timesMatched = 0
 	local pX = 0
 	local pY = 0
 	While isFishing {
 		PixelSearch, pX, pY, colorCheckAreaX1, colorCheckAreaY1, colorCheckAreaX2, colorCheckAreaY2, successColor, 10, Fast RGB
 		if !ErrorLevel {
 			ToolTip, Matched!
-			timesMatched++
 			break
 		} else {
 			sleep 150 ; Let the loop pause for a beat
@@ -374,14 +415,14 @@ showLiveSuccessBox() {
 
 	MouseGetPos curX, curY
 	PixelGetColor liveSuccessBoxColor, %curX%, %curY%, RGB
-	CreateBox("liveSuccessBox", "FF0000")
+	; CreateBox("liveSuccessBox", "FF0000")
 	CreateBox("liveSuccessBoxColor", liveSuccessBoxColor)
-	Box("liveSuccessBox", (curX - (triggerColorCheckBox/2)), (curY - (triggerColorCheckBox/2)), (triggerColorCheckBox), (triggerColorCheckBox), 1, "out")
+	; Box("liveSuccessBox", (curX - (triggerColorCheckBox/2)), (curY - (triggerColorCheckBox/2)), (triggerColorCheckBox), (triggerColorCheckBox), 1, "out")
 	Box("liveSuccessBoxColor", (curX-50), (curY - 20), 30, 30, 15, "in")
 }
 
 killLiveSuccessBox() {
-	RemoveBox("liveSuccessBox")
+	; RemoveBox("liveSuccessBox")
 	RemoveBox("liveSuccessBoxColor")
 }
 
