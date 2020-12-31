@@ -70,7 +70,7 @@ triggerColorCheckBox := 4
 SetTimer, ReloadScriptIfChanged, 4000
 isFishing := False ; Flag
 showDebug := False
-currentAction := "Stopping Fishing"
+currentAction := "Not Fishing"
 
 
 Suspend
@@ -83,17 +83,17 @@ return
 
 F3::
 	isFishing := true
-	if ( currentAction == "Stopping Fishing" ) {
+	if ( currentAction == "Not Fishing" ) {
 		currentAction := "Initing Fishing"
-		CorneredTimedToolTip("Starting to fish", 500)
+		CorneredTimedToolTip("Start Fishing", 500)
 		startFishing()
 	}
 return
 
 F4::
 	isFishing := false
-	currentAction := "Stopping Fishing"
-	CorneredTimedToolTip("Stopping fishing", 500)
+	currentAction := "Not Fishing"
+	CorneredTimedToolTip("Stop Fishing", 500)
 return
 
 F8::
@@ -112,7 +112,6 @@ return
 
 F10::
 	showDebug := !showDebug
-
 	if showDebug {
 		SetTimer, debugFishingVars, 250
 	}
@@ -125,13 +124,9 @@ F11::
 	successBoxColor := StrReplace(successColor, "0x" , "")
 	if toggleBoxes {
 		CreateBox("CatchRing","FF0000")
-		CreateBox("FishHole", "0000FF")
-		CreateBox("CatchHook","00FF00")
 		CreateBox("CatchColor", successBoxColor)
 		showBoxes()
 	} else {
-		RemoveBox("FishHole")
-		RemoveBox("CatchHook")
 		RemoveBox("CatchRing")
 		RemoveBox("CatchColor")
 	}
@@ -212,9 +207,8 @@ debugFishingVars() {
 castRod() {
 	global
 
-	currentAction := "Casting Rod"
 	if isFishing {
-		Sleep 250
+		currentAction := "Casting Rod"
 		Send, {RButton down}
 		Sleep 150
 		Send, {RButton up}
@@ -231,22 +225,23 @@ startFishing() {
 	}
 
 	While isFishing {
-		currentAction := "Starting to fish"
-		checkForHookReturn()
+		currentAction := "Fishing"
+		waitForHookReturn()
+		Sleep 250
 		castRod()
-		ToolTip
+		Sleep 150
 	}
 }
 
-checkForHookReturn() {
+waitForHookReturn() {
 	global
-	currentAction := "Waiting for fish"
+	currentAction := "Waiting for hook to return"
 	local pX = 0
 	local pY = 0
 	While isFishing {
 		PixelSearch, pX, pY, colorCheckAreaX1, colorCheckAreaY1, colorCheckAreaX2, colorCheckAreaY2, successColor, 15, Fast RGB
 		if !ErrorLevel {
-			ToolTip, Matched!, 0, 0,
+			Sleep 150
 			break
 		} else {
 			sleep 150 ; Let the loop pause for a beat
