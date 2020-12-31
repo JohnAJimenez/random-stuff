@@ -14,8 +14,7 @@
 ; High level usage:
 ; 1. Position yourself at the fishing farm
 ; 2. Mark the fishing hook (used for color comparision)
-; 3. Unsuspend the hotkeys
-; 4. Start the autofishing
+; 3. Start the autofishing
 ;
 ; Keys:
 ; General Helpers:
@@ -29,32 +28,37 @@
 ; Arrow Keys: Moves the mouse by individual pixels to help pick the trigger
 ;             ring
 ;
-; F2 : Mark the fishing hook.
 ; Action:
+; F2 : Mark the fishing hook.
 ; F3 : Starts the auto fishing.
 ; F4 : Stops the auto fishing.
 ;
 ; Setup:
 ; 1. Make sure the game is in windowed mode (not full screen) on the primary
 ;    monitor (color matching does not work otherwise)
-; 2. Go to the fishing location and set your set up to fish as per the video
+; 2. Go to the fishing location and set yourself up to fish as per the video
 ; 3. Ensure that your fishing rod is NOT cast out
 ; 4. Press Esc key to unlock your mouse
 ; 5. Place your mouse over the hook on your fishing rod
 ; 6. Unpause the game
 ; 7. Press F8 to enable the script's hotkeys
-; 8. Press F2 to record the color of the hook
+; 8. Press F2. This records the color of the hook & sets the testing pixels
 ; 9. Cast the fishing rod and ensure that your fishing farm is working
 ;    (meaning that your hook returns automatically when you catch something)
 ; 10. Press F3 to turn on the auto fishing
 ; 11. Go enjoy your life
 ; 12. Press F4 to stop the auto fishing
-; 13. Press F8 to disable the script's hotkeys
-; 14. Exit the script when done
+; 13. Exit the script when done
 ;
 ; Notes:
 ; * The script starts with the hoykeys suspended, press F8 to enable them
 ; * Ensure that you have a torch near you to reduce color changes on hook.
+; * If the block "behind" the hook is too close in color to the hook, it will
+;    cause false matches and not allow you to fish properly. You can avaoid
+;    this be using a very dark block as the hook stays pretty light (even when
+;    enchanted). Script was tested with cobblestone behind an enchanted rod and
+;    very few false matches occured.
+;
 
 #SingleInstance
 #MaxThreadsPerHotkey 2
