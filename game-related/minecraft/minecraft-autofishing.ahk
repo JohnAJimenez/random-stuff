@@ -254,20 +254,6 @@ checkForHookReturn() {
 	}
 }
 
-showLiveSuccessBox() {
-	global
-
-	MouseGetPos curX, curY
-	PixelGetColor liveSuccessBoxColor, %curX%, %curY%, Slow
-	CreateBox("liveSuccessBoxColor", liveSuccessBoxColor)
-	Box("liveSuccessBoxColor", (curX-50), (curY - 20), 30, 30, 15, "in")
-}
-
-killLiveSuccessBox() {
-	; RemoveBox("liveSuccessBox")
-	RemoveBox("liveSuccessBoxColor")
-}
-
 ;; Some Utils
 CorneredTimedToolTip(ByRef msg, dur) {
 	ToolTip, %msg%, 1, 1
