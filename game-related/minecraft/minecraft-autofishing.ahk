@@ -210,7 +210,7 @@ castRod() {
 	if isFishing {
 		currentAction := "Casting Rod"
 		Send, {RButton down}
-		Sleep 150
+		Sleep 75
 		Send, {RButton up}
 	}
 }
@@ -226,10 +226,10 @@ startFishing() {
 
 	While isFishing {
 		currentAction := "Fishing"
+		Sleep 250
 		waitForHookReturn()
 		Sleep 250
 		castRod()
-		Sleep 150
 	}
 }
 
@@ -241,7 +241,6 @@ waitForHookReturn() {
 	While isFishing {
 		PixelSearch, pX, pY, colorCheckAreaX1, colorCheckAreaY1, colorCheckAreaX2, colorCheckAreaY2, successColor, 15, Fast RGB
 		if !ErrorLevel {
-			Sleep 150
 			break
 		} else {
 			sleep 150 ; Let the loop pause for a beat
