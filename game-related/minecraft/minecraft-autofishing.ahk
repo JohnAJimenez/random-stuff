@@ -239,7 +239,7 @@ waitForHookReturn() {
 	local pX = 0
 	local pY = 0
 	While isFishing {
-		PixelSearch, pX, pY, colorCheckAreaX1, colorCheckAreaY1, colorCheckAreaX2, colorCheckAreaY2, successColor, 15, Fast RGB
+		PixelSearch, pX, pY, colorCheckAreaX1, colorCheckAreaY1, colorCheckAreaX2, colorCheckAreaY2, successColor, 50, Fast RGB
 		if !ErrorLevel {
 			break
 		} else {
