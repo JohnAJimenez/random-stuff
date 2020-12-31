@@ -112,11 +112,9 @@ return
 
 F10::
 	showDebug := !showDebug
+
 	if showDebug {
 		SetTimer, debugFishingVars, 250
-	} else {
-		ToolTip
-		SetTimer, debugFishingVars, Off
 	}
 return
 
@@ -192,16 +190,23 @@ debugFishingVars() {
 	MouseGetPos debugCurX, debugCurY
 	PixelGetColor debugCursorPixelColor, %debugCurX%, %debugCurY%, Slow
 
-	fishDebug := "Fishing Variables`n"
-	fishDebug .= "Currently Fishing: " . isFishing . "`n"
-	fishDebug .= "Current Action: " . currentAction . "`n"
-	fishDebug .= "Success CoOrds: " . successX . "x " . successY . "y`n"
-	fishDebug .= "Check Area:`n"
-	fishDebug .= "`t1: " . colorCheckAreaX1 . "x " . colorCheckAreaY1 . "y`n"
-	fishDebug .= "`t2: " . colorCheckAreaX2 . "x " . colorCheckAreaY2 . "y`n"
-	fishDebug .= "Trigger Color: " . successColor . "`n"
-	fishDebug .= "Current Pixel Color: " . debugCursorPixelColor
-	ToolTip, %fishDebug%, 0, 0, 19
+	if ( showDebug ){
+		fishDebug := "Fishing Variables`n"
+		fishDebug .= "Currently Fishing: " . isFishing . "`n"
+		fishDebug .= "Current Action: " . currentAction . "`n"
+		fishDebug .= "Success CoOrds: " . successX . "x " . successY . "y`n"
+		fishDebug .= "Check Area:`n"
+		fishDebug .= "`t1: " . colorCheckAreaX1 . "x " . colorCheckAreaY1 . "y`n"
+		fishDebug .= "`t2: " . colorCheckAreaX2 . "x " . colorCheckAreaY2 . "y`n"
+		fishDebug .= "Trigger Color: " . successColor . "`n"
+		fishDebug .= "Current Pixel Color: " . debugCursorPixelColor
+		ToolTip, %fishDebug%, 0, 0, 19
+	}
+	else {
+		ToolTip,, 0, 0, 19
+		SetTimer, debugFishingVars, Off
+	}
+
 }
 
 castRod() {
